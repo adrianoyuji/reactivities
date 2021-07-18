@@ -1,64 +1,26 @@
+import { observer } from "mobx-react-lite";
 import React from "react";
 import { Grid } from "semantic-ui-react";
-import { Activity } from "../../../app/models/activity";
+import { useStore } from "../../../app/stores/store";
 import ActivityDetails from "../details/ActivityDetails";
 import ActivityForm from "../form/ActivityForm";
 import ActivityList from "./ActivityList";
 
-interface Props {
-  activities: Activity[];
-  selectedActivity: Activity | undefined;
-  selectActivity: (id: string) => void;
-  cancelActivity: () => void;
-  editMode: boolean;
-  openForm: (id: string) => void;
-  closeForm: () => void;
-  createOrEditActivity: (activity: Activity) => void;
-  deleteActivity: (id: string) => void;
-  submitting: boolean;
-}
+const ActivityDashboard = () => {
+  const { activityStore } = useStore();
+  const { selectedActivity, editMode } = activityStore;
 
-const ActivityDashboard = ({
-  activities,
-  selectedActivity,
-  selectActivity,
-  cancelActivity,
-  editMode,
-  openForm,
-  closeForm,
-  createOrEditActivity,
-  deleteActivity,
-  submitting,
-}: Props) => {
   return (
     <Grid>
       <Grid.Column width="10">
-        <ActivityList
-          selectActivity={selectActivity}
-          activities={activities}
-          deleteActivity={deleteActivity}
-          submitting={submitting}
-        />
+        <ActivityList />
       </Grid.Column>
       <Grid.Column width="6">
-        {selectedActivity && !editMode && (
-          <ActivityDetails
-            activity={selectedActivity}
-            cancelActivity={cancelActivity}
-            openForm={openForm}
-          />
-        )}
-        {editMode && (
-          <ActivityForm
-            createOrEditActivity={createOrEditActivity}
-            closeForm={closeForm}
-            activity={selectedActivity}
-            submitting={submitting}
-          />
-        )}
+        {selectedActivity && !editMode && <ActivityDetails />}
+        {editMode && <ActivityForm />}
       </Grid.Column>
     </Grid>
   );
 };
 
-export default ActivityDashboard;
+export default observer(ActivityDashboard);
